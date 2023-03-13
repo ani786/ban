@@ -2,7 +2,10 @@ package com.me.service;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OctalStringToNumberTest {
 
@@ -20,6 +23,38 @@ public class OctalStringToNumberTest {
         byte[] expected = new byte[] {9, 126, 76, -15, 50, 75, -89, 112, -117, -114, 40, 4, 48, -58, -122, 43, 64, -9, 59, 11, 45, 116, 112, 10, -118, -103, 76, 111, 106, 108, -56, -114, 34, -28, -109, 122, 4, 110, 121, 95, 112, 50, -25, -119, -81, -4, 70, -36, -61, -80, 120, -99, -32, -113, -53, 53, 102, -26, -113, -104, 26, -2, 91, -80, -43, -83, -101, 125, -124, 48, 46, 117, -119, -110, 73, 44, -47, 126, 51, -31, 86, -96, 9, 84, 71, 28, 127, 21, 29, 82, -106, 54, 76, -98, -57, -84, -16, -29, -34, -30, 36, 94, -105, 71, -103};
         assertArrayEquals(expected, OctalStringToNumber.decodeOctalString(octalString));
     }
+
+
+    @Test
+    void testDecodeOctalStringWithInvalidCharacter() {
+        String octalString = "123#567";
+        assertThrows(NumberFormatException.class, () -> OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+
+    @Test
+    void testDecodeOctalStringWithLeadingZeros() {
+        String octalString = "00012345";
+        byte[] expectedArray = { 20, -27 };
+        assertArrayEquals(expectedArray, OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+    @Test
+    void testDecodeOctalStringWithPositiveValue() {
+        String octalString = "77777777777";
+        byte[] expectedArray = { 1, -1, -1, -1, -1};
+        assertArrayEquals(expectedArray, OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+    @Test
+    void testDecodeOctalStringWithZeroValue() {
+        String octalString = "0";
+        byte[] expectedArray = { };
+        System.out.println("===== "+ Arrays.toString(OctalStringToNumber.decodeOctalString(octalString)));
+      assertArrayEquals(expectedArray, OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+
 
 
 }
