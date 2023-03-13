@@ -55,6 +55,27 @@ public class OctalStringToNumberTest {
     }
 
 
+    @Test
+    void testDecodeOctalStringWithInvalidCharacters() {
+        String octalString = "123abc";
+        assertThrows(NumberFormatException.class, () -> OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+    @Test
+    void testDecodeOctalStringWithNegativeValue() {
+        String octalString = "-12345";
+        byte[] expectedArray = {-21, 27 };
+        assertArrayEquals(expectedArray, OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+    @Test
+    void testDecodeOctalStringWithEmptyString() {
+        String octalString = "";
+        assertThrows(NumberFormatException.class, () -> OctalStringToNumber.decodeOctalString(octalString));
+    }
+
+
+
 
 
 }
