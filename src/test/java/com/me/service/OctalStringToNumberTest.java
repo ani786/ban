@@ -2,8 +2,6 @@ package com.me.service;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -50,7 +48,6 @@ public class OctalStringToNumberTest {
     void testDecodeOctalStringWithZeroValue() {
         String octalString = "0";
         byte[] expectedArray = { };
-        System.out.println("===== "+ Arrays.toString(OctalStringToNumber.decodeOctalString(octalString)));
       assertArrayEquals(expectedArray, OctalStringToNumber.decodeOctalString(octalString));
     }
 
