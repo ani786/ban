@@ -1,19 +1,16 @@
 package com.me.service;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 class OctalStringToNumber {
 
     public static byte[] decodeOctalString(String octalString) {
-        // Convert the octal string to a long integer
-        long octalValue = Long.parseLong(octalString, 8);
+        // Convert the octal string to a BigInteger
+        BigInteger octalValue = new BigInteger(octalString, 8);
 
-        // Convert the long integer to an array of bytes
-        byte[] byteArray = new byte[Long.SIZE / Byte.SIZE];
-        for (int i = byteArray.length - 1; i >= 0; i--) {
-            byteArray[i] = (byte) (octalValue & 0xFF);
-            octalValue >>= Byte.SIZE;
-        }
+        // Convert the BigInteger to an array of bytes
+        byte[] byteArray = octalValue.toByteArray();
 
         // Trim any leading zeros from the byte array
         int firstNonZeroIndex = 0;
