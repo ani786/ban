@@ -1,61 +1,37 @@
 package com.me.service;
 
-import org.apache.commons.codec.binary.Base32;
-
-import java.util.List;
+import java.util.Arrays;
 
 class OctalStringToNumber {
 
+    public static byte[] decodeOctalString(String octalString) {
+        // Convert the octal string to a long integer
+        long octalValue = Long.parseLong(octalString, 8);
 
-    private OctalStringToNumber() {
-        throw new IllegalStateException("Utility class");
-    }
-
-    private final List<Integer> bases = List.of(8,16,32,64);
-
-
-    public static byte[] decodeString(String input, int base) {
-        if (base == 8) {
-            // Remove any non-octal characters from the input string
-            input = input.replaceAll("[^0-7]", "");
-
-            // Calculate the length of the byte array
-            int len = (input.length() + 2) / 3;
-
-            // Create a byte array to hold the result
-            byte[] result = new byte[len];
-
-            // Loop through the input string and convert each group of 3 digits to a byte
-            int start = 0;
-            for (int i = 0; i < len; i++) {
-                int end = Math.min(start + 3, input.length());
-                String group = input.substring(start, end);
-                int octalValue = Integer.parseInt(group, 8);
-                result[i] = (byte) octalValue;
-                start = end;
-            }
-
-            return result;
-        } else if (base == 16) {
-            // Remove any non-hexadecimal characters from the input string
-            input = input.replaceAll("[^0-9A-Fa-f]", "");
-
-            // Convert the input string to a byte array
-            byte[] result = new byte[input.length() / 2];
-            for (int i = 0; i < result.length; i++) {
-                int index = i * 2;
-                int hexValue = Integer.parseInt(input.substring(index, index + 2), 16);
-                result[i] = (byte) hexValue;
-            }
-
-            return result;
-        } else if (base == 32) {
-            // Decode the input string using Base32
-            return new Base32().decode(input);
-        } else {
-            throw new IllegalArgumentException("Unsupported base: " + base);
+        // Convert the long integer to an array of bytes
+        byte[] byteArray = new byte[Long.SIZE / Byte.SIZE];
+        for (int i = byteArray.length - 1; i >= 0; i--) {
+            byteArray[i] = (byte) (octalValue & 0xFF);
+            octalValue >>= Byte.SIZE;
         }
+
+        // Trim any leading zeros from the byte array
+        int firstNonZeroIndex = 0;
+        while (firstNonZeroIndex < byteArray.length && byteArray[firstNonZeroIndex] == 0) {
+            firstNonZeroIndex++;
+        }
+        byte[] trimmedArray = Arrays.copyOfRange(byteArray, firstNonZeroIndex, byteArray.length);
+
+        return trimmedArray;
     }
+
+
+
+
+
+
+
+
 
 
 
