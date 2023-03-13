@@ -4,7 +4,7 @@ import org.apache.commons.codec.binary.Base32;
 
 import java.util.Arrays;
 
-class Base32ToNumber {
+public class Base32ToNumber {
 
     public static byte[] decodeBase32String(String base32String) {
         // Convert the base32 string to a byte array

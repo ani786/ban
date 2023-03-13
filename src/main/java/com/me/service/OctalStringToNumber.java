@@ -3,7 +3,7 @@ package com.me.service;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-class OctalStringToNumber {
+public class OctalStringToNumber {
 
     public static byte[] decodeOctalString(String octalString) {
         // Convert the octal string to a BigInteger

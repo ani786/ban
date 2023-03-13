@@ -3,7 +3,7 @@ package com.me.service;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-class HexStringToNumber {
+public class HexStringToNumber {
 
     public static byte[] decodeHexString(String hexString) {
         // Convert the hexadecimal string to a BigInteger
