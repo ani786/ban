@@ -10,16 +10,43 @@ repositories {
     maven {
         url "https://repository.jboss.org/maven2"
     }
+    maven {
+        url "https://repo.spring.io/milestone"
+    }
+    maven {
+        url "https://spring.io/projects/spring-security"
+    }
+
+
 }
 
 dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+
+    implementation"org.springframework.boot:spring-boot-gradle-plugin:2.6.3"
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.3'
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.5.2.RELEASE'
+    implementation 'org.springframework.security:spring-security-oauth2-client:5.7.2'
+    implementation 'org.springframework.security:spring-security-oauth2-core:5.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-security:2.5.2'
+
+
+
     implementation 'commons-codec:commons-codec:1.15'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation 'com.frejo:force-rest-api:0.0.26'
+
+
+
+
     implementation 'org.junit.jupiter:junit-jupiter:5.8.2'
+    implementation 'org.testng:testng:7.1.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation('org.junit.vintage:junit-vintage-engine:5.7.2')
 
 
-    compileOnly'org.projectlombok:lombok:1.18.24'
+
 
 
     /*implementation"io.github.resilience4j:resilience4j-spring-boot2"
@@ -29,14 +56,10 @@ dependencies {
     implementation("io.github.resilience4j:resilience4j-timelimiter")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation('org.springframework.boot:spring-boot-starter-webflux')
-
-
     runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.76.Final:osx-aarch_64")
     compileOnly("com.google.code.findbugs:annotations:3.0.1")
-
     testImplementation('org.awaitility:awaitility:4.2.0')*/
 
-    testImplementation('org.junit.vintage:junit-vintage-engine:5.7.2')
 
 }
 
