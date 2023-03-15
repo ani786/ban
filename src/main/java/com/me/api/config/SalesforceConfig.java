@@ -27,6 +27,22 @@ import java.time.Instant;
 @EnableWebSecurity
 public class SalesforceConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${salesforce.api.base-url}")
+    private String apiBaseUrl;
+
+    @Value("${salesforce.api.host}")
+    private String apiHost;
+
+    // other code
+
+    public String getApiBaseUrl() {
+        return apiBaseUrl;
+    }
+
+    public String getApiHost() {
+        return apiHost;
+    }
+
     @Value("${spring.security.oauth2.client.registration.salesforce.client-id}")
     private String clientId;
 
@@ -44,6 +60,13 @@ public class SalesforceConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${spring.security.oauth2.client.registration.salesforce.client-name}")
     private String clientName;
+
+    public String getApiScheme() {
+        return "https";
+    }
+
+    public static final String API_BASE_URL = "https://{apiHost}{apiBasePath}/";
+
 
     @Bean
     public OAuth2AuthorizedClientService authorizedClientService() {
