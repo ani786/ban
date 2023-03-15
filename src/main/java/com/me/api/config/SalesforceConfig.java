@@ -11,8 +11,17 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+
+import java.time.Instant;
 
 @Configuration
 @EnableWebSecurity
@@ -75,4 +84,27 @@ public class SalesforceConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Client();
     }
+
+    // perform validation logic here
+    private void validateToken(OAuth2AccessToken accessToken) {
+        // Check if the token is expired
+        if (accessToken.getExpiresAt().isBefore(Instant.now())) {
+            throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token", "The access token has expired", null));
+        }
+        // Perform additional validation checks as needed
+        // ...
+    }
+
+    @Bean
+    public OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService() {
+        DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
+        return userRequest -> {
+            OAuth2User oAuth2User = delegate.loadUser(userRequest);
+            OAuth2AccessToken accessToken = authorizedClientService().loadAuthorizedClient(userRequest.getClientRegistration().getRegistrationId(), userRequest.getAccessToken().getTokenValue())
+                    .getAccessToken();
+            validateToken(accessToken);
+            return oAuth2User;
+        };
+    }
 }
+
