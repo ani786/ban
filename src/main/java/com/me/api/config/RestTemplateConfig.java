@@ -1,6 +1,5 @@
 package com.me.api.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,32 +19,29 @@ import java.io.IOException;
 @Configuration
 public class RestTemplateConfig {
 
-    @Autowired
-    private OAuth2AuthorizedClientService authorizedClientService;
-
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
+                                     OAuth2AuthorizedClientService authorizedClientService) {
         return restTemplateBuilder
-                .additionalInterceptors(new OAuth2AuthorizedClientInterceptor(authorizedClientService))
+                .interceptors(new OAuth2AuthorizedClientInterceptor(authorizedClientService))
                 .build();
     }
-}
 
-class OAuth2AuthorizedClientInterceptor implements ClientHttpRequestInterceptor {
+    private static class OAuth2AuthorizedClientInterceptor implements ClientHttpRequestInterceptor {
 
-    private final OAuth2AuthorizedClientService authorizedClientService;
+        private final OAuth2AuthorizedClientService authorizedClientService;
 
-    public OAuth2AuthorizedClientInterceptor(OAuth2AuthorizedClientService authorizedClientService) {
-        this.authorizedClientService = authorizedClientService;
-    }
+        public OAuth2AuthorizedClientInterceptor(OAuth2AuthorizedClientService authorizedClientService) {
+            this.authorizedClientService = authorizedClientService;
+        }
 
-    @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
-        String registrationId = authentication.getAuthorizedClientRegistrationId();
-        OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(registrationId, authentication.getName());
-        OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
-        request.getHeaders().setBearerAuth(accessToken.getTokenValue());
-        return execution.execute(request, body);
+        @Override
+        public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+            OAuth2AuthenticationToken authentication = (OAuth2AuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+            OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(authentication.getAuthorizedClientRegistrationId(), authentication.getName());
+            OAuth2AccessToken accessToken = authorizedClient.getAccessToken();
+            request.getHeaders().setBearerAuth(accessToken.getTokenValue());
+            return execution.execute(request, body);
+        }
     }
 }
